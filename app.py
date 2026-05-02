@@ -1,12 +1,14 @@
 import streamlit as st
 
-# 👇 AQUI: esconder sidebar
-hide_sidebar_style = """
+st.set_page_config(layout="wide", initial_sidebar_state="collapsed")
+
+st.markdown("""
 <style>
-[data-testid="stSidebar"] {display: none;}
+section[data-testid="stSidebar"] {
+    display: none !important;
+}
 </style>
-"""
-st.markdown(hide_sidebar_style, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
 st.title("📦 Controlo de Produção")
 
