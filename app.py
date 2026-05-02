@@ -1,5 +1,13 @@
 import streamlit as st
 
+# 👇 AQUI: esconder sidebar
+hide_sidebar_style = """
+<style>
+[data-testid="stSidebar"] {display: none;}
+</style>
+"""
+st.markdown(hide_sidebar_style, unsafe_allow_html=True)
+
 st.title("📦 Controlo de Produção")
 
 st.write("Insere os dados para calcular a produção e validar os rótulos.")
