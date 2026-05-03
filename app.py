@@ -1,12 +1,5 @@
 import streamlit as st
 
-<iframe 
-    src="https://a-tua-app.streamlit.app"
-    width="100%"
-    height="900px"
-    style="border:none;">
-</iframe>
-
 # 👇 AQUI: esconder sidebar
 hide_sidebar_style = """
 <style>
