@@ -8,7 +8,7 @@ hide_sidebar_style = """
 """
 st.markdown(hide_sidebar_style, unsafe_allow_html=True)
 
-st.title("Reconciliação de Rótulos/Etiquetas")
+st.title("Reconciliação de Etiquetas Tag-Price")
 
 st.set_page_config(layout="wide")
 
@@ -109,7 +109,7 @@ elif st.session_state.pagina == "uma_bobine":
         producao_total = (ultimacaixa-primeiracaixa+1)*unidades_por_caixa +unidades_soltas_primeira+unidades_soltas_ultima
 
         # Total de rótulos válidos
-        total_rotulos = (ultimo_rotulo - primeiro_rotulo + 1) - rejeitados
+        total_rotulos = (primeiro_rotulo - ultimo_rotulo + 1) - rejeitados
 
         #Resultados
         st.subheader("Resultados")
@@ -121,11 +121,11 @@ elif st.session_state.pagina == "uma_bobine":
         if producao_total == total_rotulos:
             st.success("Número de unidades produzidas e número de rótulos consistentes")
         else:
-            st.error(f"Diferença: {abs(producao_total - total_rotulos)} unidades")
+            st.warning(f"Diferença: {abs(producao_total - total_rotulos)} unidades")
             if (producao_total-total_rotulos)>0:
-                st.error("O número de unidades produzidas é superior ao número de rótulos utilizados")
+                st.error("O número de unidades produzidas é **superior** ao número de rótulos utilizados")
             else:
-                st.error("O número de unidades produzidas é inferior ao número de rótulos utilizados")
+                st.error("O número de unidades produzidas é **inferior** ao número de rótulos utilizados")
             
     if st.button("⬅ Voltar ao menu"):
         st.session_state.pagina = "menu"
@@ -216,7 +216,7 @@ elif st.session_state.pagina == "todas_bobines":
         soma_amostras=sum(b["Amostras"] for b in dados_bobines)
         soma_rejeitados=soma_amostras+soma_inutilizados
 
-        somatotal_rotulos=soma_ultimos-soma_primeiros
+        somatotal_rotulos=soma_primeiros-soma_ultimos
         
         total_rotulos=somatotal_rotulos+num_bobines
 
@@ -231,11 +231,11 @@ elif st.session_state.pagina == "todas_bobines":
         if producao_total == total_rotulosvalidos:
             st.success("Número de unidades produzidas e número de rótulos consistentes")
         else:
-            st.error(f"Diferença: {abs(producao_total - total_rotulosvalidos)} unidades")
+            st.warning(f"Diferença: {abs(producao_total - total_rotulosvalidos)} unidades")
             if (producao_total-total_rotulos)>0:
-                st.error("O número de unidades produzidas é superior ao número de rótulos utilizados")
+                st.error("O número de unidades produzidas é **superior** ao número de rótulos utilizados")
             else:
-                st.error("O número de unidades produzidas é inferior ao número de rótulos utilizados")
+                st.error("O número de unidades produzidas é **inferior** ao número de rótulos utilizados")
 
         st.text(f"""Se estiver a fechar o processo e tiver obtido um resultado positivo na reconciliação dos rótulos, coloque os seguintes valores nos locais indicados:
         A={soma_primeiros}
