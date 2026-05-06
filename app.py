@@ -230,7 +230,7 @@ elif st.session_state.pagina == "uma_bobine":
             st.success("Número de unidades produzidas e número de rótulos consistentes")
         else:
             st.warning(f"Diferença: {abs(producao_total - total_rotulos)} unidades")
-            if (producao_total-total_rotulosvalidos)>0:
+            if (producao_total-total_rotulos)>0:
                 st.error("O número de unidades produzidas é **superior** ao número de rótulos utilizados")
             else:
                 st.error("O número de unidades produzidas é **inferior** ao número de rótulos utilizados")
