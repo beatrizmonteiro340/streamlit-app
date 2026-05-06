@@ -1,4 +1,71 @@
 import streamlit as st
+import uuid
+import json
+
+
+st.set_page_config(layout="wide",initial_sidebar_state="collapsed")
+
+from supabase import create_client
+
+url = "https://rxclloczckuewtlifcwd.supabase.co"
+key = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ4Y2xsb2N6Y2t1ZXd0bGlmY3dkIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzgwODExNTUsImV4cCI6MjA5MzY1NzE1NX0.FodASeEFbQAAzPLNUFjgZi3EjFZ_Y0_GRLkVTJT4H5s"
+
+supabase = create_client(url, key)
+
+# -------------------------
+# GUARDAR DADOS
+# ---------------------
+def guardar_dados():
+    fk = st.session_state.get("form_key", "default")
+    supabase.table("sessoes").upsert({
+        "session_id": st.session_state.session_id,
+        "dados": {
+            "form_key": fk,
+            "formulario": st.session_state.get("formulario", {})
+        }
+    }).execute()
+def carregar_dados():
+
+    res = supabase.table("sessoes") \
+        .select("*") \
+        .eq("session_id", st.session_state.session_id) \
+        .execute()
+    if res.data and "dados" in res.data[0]:
+        dados = res.data[0]["dados"]
+        if "form_key" in dados:
+            st.session_state["form_key"] = dados["form_key"]
+        if "formulario" in dados:
+            st.session_state["formulario"] = dados["formulario"]
+# -------------------------
+# ID ÚNICO DA SESSÃO
+# -------------------------
+query_params = st.query_params
+
+if "session_id" not in query_params:
+
+    novo_id = str(uuid.uuid4())
+
+    st.query_params["session_id"] = novo_id
+
+    st.session_state.session_id = novo_id
+
+else:
+
+    st.session_state.session_id = query_params["session_id"]
+
+st.session_state.setdefault("pagina", "menu")
+st.session_state.setdefault("pagina_anterior", None)
+st.session_state.setdefault("dados_carregados", False)
+st.session_state.setdefault("form_key", "default")
+
+if not st.session_state.get("dados_carregados", False):
+    carregar_dados()
+    st.session_state.dados_carregados = True
+
+# Recarrega quando muda de página
+if st.session_state.pagina_anterior != st.session_state.pagina:
+    carregar_dados()
+    st.session_state.pagina_anterior = st.session_state.pagina
 
 # 👇 AQUI: esconder sidebar
 hide_sidebar_style = """
@@ -9,8 +76,6 @@ hide_sidebar_style = """
 st.markdown(hide_sidebar_style, unsafe_allow_html=True)
 
 st.title("Reconciliação de Etiquetas Tag-Price")
-
-st.set_page_config(layout="wide")
 
 st.markdown("""
 
@@ -28,12 +93,6 @@ div.stButton > button > div > p {
 }
 </style>
 """, unsafe_allow_html=True)
-
-# -------------------------
-# Estado inicial
-# -------------------------
-if "pagina" not in st.session_state:
-    st.session_state.pagina = "menu"
 
 # -------------------------
 # MENU INICIAL
@@ -55,55 +114,104 @@ if st.session_state.pagina == "menu":
             st.rerun() 
 
 elif st.session_state.pagina == "uma_bobine":
+    fk = st.session_state["form_key"]
+    f = st.session_state.get("formulario", {})
 
-    #Inputs Troca da bobine (contando que as contas anteriores foram bem feitas, basta fazer as contas para a bobine acabada)
-    st.markdown("<p style='font-size:22px;font-weight:700;'>Inserir dados de produção</p>", unsafe_allow_html=True)
+    if f"unidades_por_caixa_{fk}" not in st.session_state:
+        st.session_state[f"unidades_por_caixa_{fk}"] = f.get("unidades_por_caixa", 0)
+        st.session_state[f"primeiracaixa_{fk}"] = f.get("primeiracaixa", 0)
+        st.session_state[f"ultimacaixa_{fk}"] = f.get("ultimacaixa", 0)
+        st.session_state[f"unidades_soltas_primeira_{fk}"] = f.get("unidades_soltas_primeira", 0)
+        st.session_state[f"unidades_soltas_ultima_{fk}"] = f.get("unidades_soltas_ultima", 0)
+        st.session_state[f"primeiro_rotulo_{fk}"] = f.get("primeiro_rotulo", 0)
+        st.session_state[f"ultimo_rotulo_{fk}"] = f.get("ultimo_rotulo", 0)
+        st.session_state[f"rejeitados_{fk}"] = f.get("rejeitados", 0)
 
-    # Linha 1
-    col1, col2 = st.columns(2)
+    with st.form(f"form_uma_bobine_{fk}"):             # ABRE FORM
+    
+        #Inputs Troca da bobine (contando que as contas anteriores foram bem feitas, basta fazer as contas para a bobine acabada)
+        st.markdown("<p style='font-size:22px;font-weight:700;'>Inserir dados de produção</p>", unsafe_allow_html=True)
 
-    with col1:
-        u1 = unidades_por_caixa = st.number_input("Número de unidades por caixa contentora (parâmetro de embalagem)", min_value=0, step=1)
+        # Linha 1
+        col1, col2 = st.columns(2)
 
-    # Linha 2
-    col3, col4 = st.columns(2)
+        with col1:
+            u1 = unidades_por_caixa = st.number_input("Número de unidades por caixa contentora (parâmetro de embalagem)", min_value=0, step=1, key=f"unidades_por_caixa_{fk}",value=f.get("unidades_por_caixa", 0))
 
-    with col3:
-        u3 = primeiracaixa = st.number_input("Número da primeira caixa contentora completa", min_value=0, step=1)
+        # Linha 2
+        col3, col4 = st.columns(2)
 
-    with col4:
-        u4 = ultimacaixa=st.number_input("Número da última caixa contentora completa", min_value=0, step=1)
+        with col3:
+            u3 = primeiracaixa = st.number_input("Número da primeira caixa contentora completa", min_value=0, step=1, key=f"primeiracaixa_{fk}",value=f.get("primeiracaixa", 0))
 
-    # Linha 3
-    col5, col6 = st.columns(2)
+        with col4:
+            u4 = ultimacaixa=st.number_input("Número da última caixa contentora completa", min_value=0, step=1,key=f"ultimacaixa_{fk}",value=f.get("ultimacaixa", 0))
 
-    with col5:
-        u5 = unidades_soltas_primeira=st.number_input("Número de unidades na primeira caixa contentora incompleta", min_value=0, step=1)
+        # Linha 3
+        col5, col6 = st.columns(2)
 
-    with col6:
-        u6 = unidades_soltas_ultima=st.number_input("Número de unidades na última caixa contentora incompleta", min_value=0, step=1)
+        with col5:
+            u5 = unidades_soltas_primeira=st.number_input("Número de unidades na primeira caixa contentora incompleta", min_value=0, step=1,key=f"unidades_soltas_primeira_{fk}",value=f.get("unidades_soltas_primeira", 0))
 
-    st.divider()
+        with col6:
+            u6 = unidades_soltas_ultima=st.number_input("Número de unidades na última caixa contentora incompleta", min_value=0, step=1,key=f"unidades_soltas_ultima_{fk}",value=f.get("unidades_soltas_ultima", 0))
 
-    st.markdown("<p style='font-size:22px; font-weight:700;'>Inserir dados dos rótulos</p>", unsafe_allow_html=True)
+        st.divider()
 
-    # Linha 1
-    col1, col2 = st.columns(2)
+        st.markdown("<p style='font-size:22px; font-weight:700;'>Inserir dados dos rótulos</p>", unsafe_allow_html=True)
 
-    with col1:
-        u1 = primeiro_rotulo = st.number_input("Número do primeiro rótulo da bobine", min_value=0, step=1)
+        # Linha 1
+        col1, col2 = st.columns(2)
 
-    with col2:
-        u2=ultimo_rotulo = st.number_input("Número do último rótulo da bobine", min_value=0, step=1)
+        with col1:
+            u1 = primeiro_rotulo = st.number_input("Número do primeiro rótulo da bobine", min_value=0, step=1, key=f"primeiro_rotulo_{fk}",value=f.get("primeiro_rotulo", 0))
 
-    # Linha 2
-    col3, col4 = st.columns(2)
+        with col2:
+            u2=ultimo_rotulo = st.number_input("Número do último rótulo da bobine", min_value=0, step=1, key=f"ultimo_rotulo_{fk}",value=f.get("ultimo_rotulo", 0))
 
-    with col3:
-        u3 = rejeitados = st.number_input("Número de rejeitados (inutilizados + amostras)", min_value=0, step=1)
+        # Linha 2
+        col3, col4 = st.columns(2)
+
+        with col3:
+            u3 = rejeitados = st.number_input("Número de rejeitados (inutilizados + amostras)", min_value=0, step=1, key=f"rejeitados_{fk}",value=f.get("rejeitados", 0))
+
+        submitted = st.form_submit_button("Calcular")
+
+    if st.button("⬅ Voltar ao menu"): 
+        guardar_dados()                                 # BOTÃO (FORA do form)
+        st.session_state.pagina = "menu"
+        st.rerun() 
+
+    # ⭐ NOVO: Simples! Sem limpeza manual
+    if st.button("Nova reconciliação"): 
+        novo_fk = str(uuid.uuid4()) 
+        keys_manter = ["session_id", "pagina", "dados_carregados"]
+        keys_apagar = [k for k in st.session_state if k not in keys_manter]
+        for k in keys_apagar:
+            del st.session_state[k]
+        st.session_state["form_key"] = novo_fk
+        st.session_state["dados_carregados"] = True
+        supabase.table("sessoes").upsert({
+            "session_id": st.session_state.session_id,
+            "dados": {}
+        }).execute()
+        st.rerun()
 
     #Cálculos
-    if st.button("Calcular"):
+    if submitted:
+    
+        st.session_state["formulario"] = {
+        "unidades_por_caixa": unidades_por_caixa,
+        "primeiracaixa": primeiracaixa,
+        "ultimacaixa": ultimacaixa,
+        "unidades_soltas_primeira": unidades_soltas_primeira,
+        "unidades_soltas_ultima": unidades_soltas_ultima,
+        "primeiro_rotulo": primeiro_rotulo,
+        "ultimo_rotulo": ultimo_rotulo,
+        "rejeitados": rejeitados,
+        }
+
+        guardar_dados()
 
         # Produção total
         producao_total = (ultimacaixa-primeiracaixa+1)*unidades_por_caixa +unidades_soltas_primeira+unidades_soltas_ultima
@@ -122,93 +230,136 @@ elif st.session_state.pagina == "uma_bobine":
             st.success("Número de unidades produzidas e número de rótulos consistentes")
         else:
             st.warning(f"Diferença: {abs(producao_total - total_rotulos)} unidades")
-            if (producao_total-total_rotulos)>0:
+            if (producao_total-total_rotulosvalidos)>0:
                 st.error("O número de unidades produzidas é **superior** ao número de rótulos utilizados")
             else:
                 st.error("O número de unidades produzidas é **inferior** ao número de rótulos utilizados")
-            
-    if st.button("⬅ Voltar ao menu"):
-        st.session_state.pagina = "menu"
-        st.rerun() 
+
 
 elif st.session_state.pagina == "todas_bobines":
+    fk = st.session_state["form_key"]
+    f = st.session_state.get("formulario", {})
+    bobines_guardadas = f.get("bobines", [])
 
-    #Inputs Reconciliação de todas as bobines
-    st.markdown("<p style='font-size:22px;font-weight:700;'>Inserir dados de produção</p>", unsafe_allow_html=True)
+    if not st.session_state.get("dados_restaurados", False):
+        st.session_state[f"unidades_por_caixa_{fk}"] = f.get("unidades_por_caixa", 0)
+        st.session_state[f"caixas_{fk}"] = f.get("caixas", 0)
+        st.session_state[f"unidades_soltas_{fk}"] = f.get("unidades_soltas", 0)
+        st.session_state[f"num_bobines_{fk}"] = f.get("num_bobines", 1)
+        st.session_state["dados_restaurados"] = True
 
-     # Linha 1
-    col1, col2 = st.columns(2)
-
-    with col1:
-        u1 = unidades_por_caixa = st.number_input("Número de unidades por caixa contentora (parâmetro de embalagem)", min_value=0, step=1)
-
-    # Linha 2
-    col3, col4 = st.columns(2)
-
-    with col3:
-        u3 = caixas = st.number_input("Número de caixas contentoras completas produzidas", min_value=0, step=1)
-
-    with col4:
-        u4 = unidades_soltas=st.number_input("Número de unidades na última caixa contentora incompleta", min_value=0, step=1)
-
-    st.divider()
-
-    st.markdown("<p style='font-size:22px; font-weight:700;'>Inserir dados dos rótulos</p>", unsafe_allow_html=True)
+    # Bobines SEMPRE - para restaurar ao voltar do menu
+    for i, b in enumerate(bobines_guardadas):
+        if f"primeiro_{i}_{fk}" not in st.session_state:
+            st.session_state[f"primeiro_{i}_{fk}"] = b.get("Primeiro", 0)
+            st.session_state[f"ultimo_{i}_{fk}"] = b.get("Último", 0)
+            st.session_state[f"inutilizados_{i}_{fk}"] = b.get("Inutilizados", 0)
+            st.session_state[f"amostras_{i}_{fk}"] = b.get("Amostras", 0)
 
     # Número de bobines
     num_bobines = st.number_input(
-        "Número de bobines utilizadas:",
-        min_value=1,
-        step=1
-    )
+        "Número de bobines utilizadas:", min_value=1, step=1, key=f"num_bobines_{fk}",value=f.get("num_bobines", 1))
 
-    # Guardar dados
-    dados_bobines = []
+    with st.form(f"form_várias_bobine_{fk}"):    
 
-    for i in range(num_bobines):
+        #Inputs Reconciliação de todas as bobines
+        st.markdown("<p style='font-size:22px;font-weight:700;'>Inserir dados de produção</p>", unsafe_allow_html=True)
 
-        st.markdown(f"<p style='font-size:18px; font-weight:700;'>Bobine {i+1}</p>", unsafe_allow_html=True)
-
-        col1, col2, col3, col4 = st.columns(4)
+        # Linha 1
+        col1, col2 = st.columns(2)
 
         with col1:
-            primeiro = st.number_input(
-                f"Número do primeiro rótulo da bobine {i+1}",
-                key=f"primeiro_{i}",min_value=0, step=1
-            )
+            u1 = unidades_por_caixa = st.number_input("Número de unidades por caixa contentora (parâmetro de embalagem)", min_value=0, step=1, key=f"unidades_por_caixa_{fk}",value=f.get("unidades_por_caixa", 0))
 
-        with col2:
-            ultimo = st.number_input(
-                f"Número do último rótulo da bobine {i+1}",
-                key=f"ultimo_{i}",min_value=0, step=1
-            )
+        # Linha 2
+        col3, col4 = st.columns(2)
 
         with col3:
-            inutilizados=st.number_input(
-                f"Número de rótulos inutilizados da bobine {i+1}",
-                key=f"inutilizados_{i}",min_value=0, step=1
-            )
+            u3 = caixas = st.number_input("Número de caixas contentoras completas produzidas", min_value=0, step=1, key=f"caixas_{fk}",value=f.get("caixas", 0))
 
         with col4:
-            amostras=st.number_input(
-                f"Número de amostras da bobine {i+1}",
-                key=f"amostras_{i}",min_value=0, step=1
-            )
+            u4 = unidades_soltas=st.number_input("Número de unidades na última caixa contentora incompleta", min_value=0, step=1, key=f"unidades_soltas_{fk}",value=f.get("unidades_soltas", 0))
 
-        dados_bobines.append({
-            "Bobine": i+1,
-            "Primeiro": primeiro,
-            "Último": ultimo,
-            "Inutilizados":inutilizados,
-            "Amostras":amostras
-        })
+        st.divider()
+
+        st.markdown("<p style='font-size:22px; font-weight:700;'>Inserir dados dos rótulos</p>", unsafe_allow_html=True)
+
+        # Guardar dados
+        dados_bobines = []
+        bobines_guardadas = f.get("bobines", [])
+
+        for i in range(num_bobines):
+
+            st.markdown(f"<p style='font-size:18px; font-weight:700;'>Bobine {i+1}</p>", unsafe_allow_html=True)
+            b = bobines_guardadas[i] if i < len(bobines_guardadas) else {}
+            col1, col2, col3, col4 = st.columns(4)
+
+            with col1:
+                primeiro = st.number_input(
+                    f"Número do primeiro rótulo da bobine {i+1}",
+                    key=f"primeiro_{i}_{fk}",min_value=0, step=1,value=b.get("primeiro", 0)
+                )
+
+            with col2:
+                ultimo = st.number_input(
+                    f"Número do último rótulo da bobine {i+1}",
+                    key=f"ultimo_{i}_{fk}",min_value=0, step=1,value=b.get("ultimo", 0)
+                )
+
+            with col3:
+                inutilizados=st.number_input(
+                    f"Número de rótulos inutilizados da bobine {i+1}",
+                    key=f"inutilizados_{i}_{fk}",min_value=0, step=1,value=b.get("inutilizados", 0)
+                )
+
+            with col4:
+                amostras=st.number_input(
+                    f"Número de amostras da bobine {i+1}",
+                    key=f"amostras_{i}_{fk}",min_value=0, step=1,value=b.get("amostras", 0)
+                )
+
+            dados_bobines.append({
+                "Bobine": i+1,
+                "Primeiro": primeiro,
+                "Último": ultimo,
+                "Inutilizados":inutilizados,
+                "Amostras":amostras
+            })
+
+        submitted = st.form_submit_button("Calcular")
+
+    if st.button("⬅ Voltar ao menu"):    
+        guardar_dados()                                 # BOTÃO (FORA do form)
+        st.session_state.pagina = "menu"
+        st.rerun() 
+
+    # ⭐ NOVO: Simples! Sem limpeza manual
+    if st.button("Nova reconciliação"):                              # BOTÃO (FORA do form)
+        novo_fk = str(uuid.uuid4()) 
+        keys_manter = ["session_id", "pagina", "dados_carregados"]
+        keys_apagar = [k for k in st.session_state if k not in keys_manter]
+        for k in keys_apagar:
+            del st.session_state[k]
+        st.session_state["form_key"] = novo_fk
+        st.session_state["dados_carregados"] = True
+        supabase.table("sessoes").upsert({
+            "session_id": st.session_state.session_id,
+            "dados": {}
+        }).execute()
+        st.rerun()  
 
     #Cálculos
-    if st.button("Calcular"):
-
+    if submitted: 
+        st.session_state["formulario"] = {
+            "unidades_por_caixa": unidades_por_caixa,
+            "caixas": caixas,
+            "unidades_soltas": unidades_soltas,
+            "num_bobines": num_bobines,
+            "bobines": dados_bobines,  # <- lista completa das bobines
+        }
+        guardar_dados()
         # Produção total esperada
         producao_total = (caixas)*unidades_por_caixa+unidades_soltas
-
         soma_primeiros = sum(b["Primeiro"] for b in dados_bobines)
         soma_ultimos = sum(b["Último"] for b in dados_bobines)
 
@@ -217,7 +368,7 @@ elif st.session_state.pagina == "todas_bobines":
         soma_rejeitados=soma_amostras+soma_inutilizados
 
         somatotal_rotulos=soma_primeiros-soma_ultimos
-        
+            
         total_rotulos=somatotal_rotulos+num_bobines
 
         total_rotulosvalidos=total_rotulos-soma_rejeitados
@@ -232,7 +383,7 @@ elif st.session_state.pagina == "todas_bobines":
             st.success("Número de unidades produzidas e número de rótulos consistentes")
         else:
             st.warning(f"Diferença: {abs(producao_total - total_rotulosvalidos)} unidades")
-            if (producao_total-total_rotulos)>0:
+            if (producao_total-total_rotulosvalidos)>0:
                 st.error("O número de unidades produzidas é **superior** ao número de rótulos utilizados")
             else:
                 st.error("O número de unidades produzidas é **inferior** ao número de rótulos utilizados")
@@ -248,8 +399,5 @@ elif st.session_state.pagina == "todas_bobines":
         E+F={total_rotulos}
         G-H={total_rotulosvalidos}
         Quantidade final obtida={producao_total}""")
-        
 
-    if st.button("⬅ Voltar ao menu"):
-        st.session_state.pagina = "menu"
-        st.rerun() 
+
