@@ -109,6 +109,10 @@ div.stButton > button > div > p {
 </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+    <button onclick="window.print()" style="cursor:pointer;">🖨️ Imprimir</button>
+""", unsafe_allow_html=True)
+
 # -------------------------
 # MENU INICIAL
 # -------------------------
