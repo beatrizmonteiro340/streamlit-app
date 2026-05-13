@@ -93,7 +93,6 @@ if st.session_state.pagina_anterior != st.session_state.pagina:
 st.markdown("""
 <style>
 [data-testid="stSidebar"] {display: none;}
-#MainMenu {display: none;}
 footer {display: none;}
 div.stButton > button {
     width: 100%;
