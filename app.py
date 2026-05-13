@@ -91,23 +91,16 @@ if st.session_state.pagina_anterior != st.session_state.pagina:
     carregar_dados()
     st.session_state.pagina_anterior = st.session_state.pagina
 
-# 👇 AQUI: esconder sidebar
-hide_sidebar_style = """
+st.markdown("""
 <style>
 [data-testid="stSidebar"] {display: none;}
-</style>
-"""
-st.markdown(hide_sidebar_style, unsafe_allow_html=True)
-
-st.markdown("""
-
-<style>
+#MainMenu {display: none;}
+footer {display: none;}
 div.stButton > button {
     width: 100%;
     height: 100px;
     border-radius: 20px;
 }
-
 div.stButton > button > div,
 div.stButton > button > div > p {
     font-size: 48px !important;
