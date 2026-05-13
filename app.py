@@ -113,7 +113,7 @@ div.stButton > button > div > p {
 
 if st.session_state.pagina == "menu_inicial":
 
-    st.title("Reconciliação de Rótulos e Etiquetas")
+    st.title("Reconciliação Etiquetas")
 
     st.write("Escolha uma opção:")
 
@@ -125,7 +125,7 @@ if st.session_state.pagina == "menu_inicial":
             st.rerun()
 
     with col2:
-        if st.button("**Reconciliação de Rótulos**"):
+        if st.button("**Reconciliação de Etiquetas de Maço**"):
             st.session_state.pagina = "menuROTULOS"
             st.rerun()
 
@@ -203,10 +203,10 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         col1, col2 = st.columns(2)
 
         with col1:
-            u1 = primeiro_rotulo = st.number_input("Número do primeiro rótulo da bobine", min_value=0, step=1, key=f"primeiro_rotulo_TAGPRICE{fk}",value=f.get("primeiro_rotulo", 0))
+            u1 = primeiro_rotulo = st.number_input("Número da primeira etiqueta da bobine", min_value=0, step=1, key=f"primeiro_rotulo_TAGPRICE{fk}",value=f.get("primeiro_rotulo", 0))
 
         with col2:
-            u2=ultimo_rotulo = st.number_input("Número do último rótulo da bobine", min_value=0, step=1, key=f"ultimo_rotulo_TAGPRICE{fk}",value=f.get("ultimo_rotulo", 0))
+            u2=ultimo_rotulo = st.number_input("Número da última etiqueta da bobine", min_value=0, step=1, key=f"ultimo_rotulo_TAGPRICE{fk}",value=f.get("ultimo_rotulo", 0))
 
         # Linha 2
         col3, col4 = st.columns(2)
@@ -261,17 +261,17 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         st.subheader("Resultados")
 
         st.write(f"✔ Produção: **{producao_total} unidades**")
-        st.write(f"✔ Rótulos válidos (excluindo inutilizados e amostras): **{total_rotulos} unidades**")
+        st.write(f"✔ Etiquetas válidas (excluindo inutilizados e amostras): **{total_rotulos} unidades**")
 
         #Verificação
         if producao_total == total_rotulos:
-            st.success("Número de unidades produzidas e número de rótulos consistentes")
+            st.success("Número de unidades produzidas e número de etiquetas consistentes")
         else:
             st.warning(f"Diferença: {abs(producao_total - total_rotulos)} unidades")
             if (producao_total-total_rotulos)>0:
-                st.error("O número de unidades produzidas é **superior** ao número de rótulos utilizados")
+                st.error("O número de unidades produzidas é **superior** ao número de etiquetas utilizadas")
             else:
-                st.error("O número de unidades produzidas é **inferior** ao número de rótulos utilizados")
+                st.error("O número de unidades produzidas é **inferior** ao número de etiquetas utilizadas")
 
 
 elif st.session_state.pagina == "todas_bobinesTAGPRICE":
@@ -334,19 +334,19 @@ elif st.session_state.pagina == "todas_bobinesTAGPRICE":
 
             with col1:
                 primeiro = st.number_input(
-                    f"Número do primeiro rótulo da bobine {i+1}",
+                    f"Número da primeira etiqueta da bobine {i+1}",
                     key=f"primeiro_TAGPRICE{i}_{fk}",min_value=0, step=1,value=b.get("primeiro", 0)
                 )
 
             with col2:
                 ultimo = st.number_input(
-                    f"Número do último rótulo da bobine {i+1}",
+                    f"Número da última etiqueta da bobine {i+1}",
                     key=f"ultimo_TAGPRICE{i}_{fk}",min_value=0, step=1,value=b.get("ultimo", 0)
                 )
 
             with col3:
                 inutilizados=st.number_input(
-                    f"Número de rótulos inutilizados da bobine {i+1}",
+                    f"Número de etiquetas inutilizadas da bobine {i+1}",
                     key=f"inutilizados_TAGPRICE{i}_{fk}",min_value=0, step=1,value=b.get("inutilizados", 0)
                 )
 
@@ -413,19 +413,19 @@ elif st.session_state.pagina == "todas_bobinesTAGPRICE":
         #Resultados
         st.subheader("Resultados")
         st.write(f"✔ Produção: **{producao_total} unidades**")
-        st.write(f"✔ Rótulos válidos (excluindo inutilizados e amostras): **{total_rotulosvalidos} unidades**")
+        st.write(f"✔ Etiquetas válidas (excluindo inutilizados e amostras): **{total_rotulosvalidos} unidades**")
 
         #Verificação
         if producao_total == total_rotulosvalidos:
-            st.success("Número de unidades produzidas e número de rótulos consistentes")
+            st.success("Número de unidades produzidas e número de etiquetas consistentes")
         else:
             st.warning(f"Diferença: {abs(producao_total - total_rotulosvalidos)} unidades")
             if (producao_total-total_rotulosvalidos)>0:
-                st.error("O número de unidades produzidas é **superior** ao número de rótulos utilizados")
+                st.error("O número de unidades produzidas é **superior** ao número de etiquetas utilizadas")
             else:
-                st.error("O número de unidades produzidas é **inferior** ao número de rótulos utilizados")
+                st.error("O número de unidades produzidas é **inferior** ao número de etiquetas utilizadas")
 
-        st.text(f"""Se estiver a fechar o processo e tiver obtido um resultado positivo na reconciliação dos rótulos, coloque os seguintes valores nos locais indicados:
+        st.text(f"""Se estiver a fechar o processo e tiver obtido um resultado positivo na reconciliação das etiquetas, coloque os seguintes valores nos locais indicados:
         A={soma_primeiros}
         B={soma_ultimos}
         C={soma_inutilizados}
@@ -439,7 +439,7 @@ elif st.session_state.pagina == "todas_bobinesTAGPRICE":
 
 elif st.session_state.pagina == "menuROTULOS":
 
-    st.title("Reconciliação de Rótulos")
+    st.title("Reconciliação de Etiquetas de Maço")
 
     st.write("Escolha uma opção:")
 
@@ -483,7 +483,7 @@ elif st.session_state.pagina == "uma_bobineROTULOS":
         col1, col2 = st.columns(2)
 
         with col1:
-            u1 = unidades_por_caixa = st.number_input("Número de unidades por caixa contentora (parâmetro de embalagem)", min_value=0, step=1, key=f"unidades_por_caixa_ROTULOS{fk}",value=f.get("unidades_por_caixa", 0))
+            u1 = unidades_por_caixa = st.number_input("Número de maços por caixa contentora (parâmetro de embalagem)", min_value=0, step=1, key=f"unidades_por_caixa_ROTULOS{fk}",value=f.get("unidades_por_caixa", 0))
 
         # Linha 2
         col3, col4 = st.columns(2)
@@ -498,10 +498,10 @@ elif st.session_state.pagina == "uma_bobineROTULOS":
         col5, col6 = st.columns(2)
 
         with col5:
-            u5 = unidades_soltas_primeira=st.number_input("Número de unidades na primeira caixa contentora incompleta", min_value=0, step=1,key=f"unidades_soltas_primeira_ROTULOS{fk}",value=f.get("unidades_soltas_primeira", 0))
+            u5 = unidades_soltas_primeira=st.number_input("Número de maços na primeira caixa contentora incompleta", min_value=0, step=1,key=f"unidades_soltas_primeira_ROTULOS{fk}",value=f.get("unidades_soltas_primeira", 0))
 
         with col6:
-            u6 = unidades_soltas_ultima=st.number_input("Número de unidades na última caixa contentora incompleta", min_value=0, step=1,key=f"unidades_soltas_ultima_ROTULOS{fk}",value=f.get("unidades_soltas_ultima", 0))
+            u6 = unidades_soltas_ultima=st.number_input("Número de maços na última caixa contentora incompleta", min_value=0, step=1,key=f"unidades_soltas_ultima_ROTULOS{fk}",value=f.get("unidades_soltas_ultima", 0))
 
         st.divider()
 
@@ -511,10 +511,10 @@ elif st.session_state.pagina == "uma_bobineROTULOS":
         col1, col2 = st.columns(2)
 
         with col1:
-            u1 = primeiro_rotulo = st.number_input("Número do primeiro rótulo da bobine", min_value=0, step=1, key=f"primeiro_rotulo_ROTULOS{fk}",value=f.get("primeiro_rotulo", 0))
+            u1 = primeiro_rotulo = st.number_input("Número da primeira etiqueta da bobine", min_value=0, step=1, key=f"primeiro_rotulo_ROTULOS{fk}",value=f.get("primeiro_rotulo", 0))
 
         with col2:
-            u2=ultimo_rotulo = st.number_input("Número do último rótulo da bobine", min_value=0, step=1, key=f"ultimo_rotulo_ROTULOS{fk}",value=f.get("ultimo_rotulo", 0))
+            u2=ultimo_rotulo = st.number_input("Número da última etiqueta da bobine", min_value=0, step=1, key=f"ultimo_rotulo_ROTULOS{fk}",value=f.get("ultimo_rotulo", 0))
 
         # Linha 2
         col3, col4 = st.columns(2)
@@ -568,17 +568,17 @@ elif st.session_state.pagina == "uma_bobineROTULOS":
         st.subheader("Resultados")
 
         st.write(f"✔ Produção: **{producao_total} unidades**")
-        st.write(f"✔ Rótulos válidos (excluindo inutilizados e amostras): **{total_rotulos} unidades**")
+        st.write(f"✔ Etiquetas válidos (excluindo inutilizados e amostras): **{total_rotulos} unidades**")
 
         #Verificação
         if producao_total == total_rotulos:
-            st.success("Número de unidades produzidas e número de rótulos consistentes")
+            st.success("Número de maços produzidos e número de etiquetas consistentes")
         else:
             st.warning(f"Diferença: {abs(producao_total - total_rotulos)} unidades")
             if (producao_total-total_rotulos)>0:
-                st.error("O número de unidades produzidas é **superior** ao número de rótulos utilizados")
+                st.error("O número de maços produzidos é **superior** ao número de etiquetas utilizadas")
             else:
-                st.error("O número de unidades produzidas é **inferior** ao número de rótulos utilizados")
+                st.error("O número de maços produzidos é **inferior** ao número de etiquetas utilizadas")
 
 
 elif st.session_state.pagina == "todas_bobinesROTULOS":
@@ -614,7 +614,7 @@ elif st.session_state.pagina == "todas_bobinesROTULOS":
         col1, col2 = st.columns(2)
 
         with col1:
-            u1 = unidades_por_caixa = st.number_input("Número de unidades por caixa contentora (parâmetro de embalagem)", min_value=0, step=1, key=f"unidades_por_caixa_ROTULOS{fk}",value=f.get("unidades_por_caixa", 0))
+            u1 = unidades_por_caixa = st.number_input("Número de maços por caixa contentora (parâmetro de embalagem)", min_value=0, step=1, key=f"unidades_por_caixa_ROTULOS{fk}",value=f.get("unidades_por_caixa", 0))
 
         # Linha 2
         col3, col4 = st.columns(2)
@@ -623,7 +623,7 @@ elif st.session_state.pagina == "todas_bobinesROTULOS":
             u3 = caixas = st.number_input("Número de caixas contentoras completas produzidas", min_value=0, step=1, key=f"caixas_ROTULOS{fk}",value=f.get("caixas", 0))
 
         with col4:
-            u4 = unidades_soltas=st.number_input("Número de unidades na última caixa contentora incompleta", min_value=0, step=1, key=f"unidades_soltas_ROTULOS{fk}",value=f.get("unidades_soltas", 0))
+            u4 = unidades_soltas=st.number_input("Número de maços na última caixa contentora incompleta", min_value=0, step=1, key=f"unidades_soltas_ROTULOS{fk}",value=f.get("unidades_soltas", 0))
 
         st.divider()
 
@@ -641,19 +641,19 @@ elif st.session_state.pagina == "todas_bobinesROTULOS":
 
             with col1:
                 primeiro = st.number_input(
-                    f"Número do primeiro rótulo da bobine {i+1}",
+                    f"Número da primeira etiqueta da bobine {i+1}",
                     key=f"primeiro_ROTULOS{i}_{fk}",min_value=0, step=1,value=b.get("primeiro", 0)
                 )
 
             with col2:
                 ultimo = st.number_input(
-                    f"Número do último rótulo da bobine {i+1}",
+                    f"Número da última etiqueta da bobine {i+1}",
                     key=f"ultimo_ROTULOS{i}_{fk}",min_value=0, step=1,value=b.get("ultimo", 0)
                 )
 
             with col3:
                 inutilizados=st.number_input(
-                    f"Número de rótulos inutilizados da bobine {i+1}",
+                    f"Número de etiquetas inutilizadas da bobine {i+1}",
                     key=f"inutilizados_ROTULOS{i}_{fk}",min_value=0, step=1,value=b.get("inutilizados", 0)
                 )
 
@@ -723,19 +723,19 @@ elif st.session_state.pagina == "todas_bobinesROTULOS":
         #Resultados
         st.subheader("Resultados")
         st.write(f"✔ Produção: **{producao_total} unidades**")
-        st.write(f"✔ Rótulos válidos (excluindo inutilizados e amostras): **{total_rotulosvalidos} unidades**")
+        st.write(f"✔ Etiquetas válidas (excluindo inutilizados e amostras): **{total_rotulosvalidos} unidades**")
 
         #Verificação
         if producao_total == total_rotulosvalidos:
-            st.success("Número de unidades produzidas e número de rótulos consistentes")
+            st.success("Número de maços produzidos e número de etiquetas consistentes")
         else:
             st.warning(f"Diferença: {abs(producao_total - total_rotulosvalidos)} unidades")
             if (producao_total-total_rotulosvalidos)>0:
-                st.error("O número de unidades produzidas é **superior** ao número de rótulos utilizados")
+                st.error("O número de maços produzidos é **superior** ao número de etiquetas utilizadas")
             else:
-                st.error("O número de unidades produzidas é **inferior** ao número de rótulos utilizados")
+                st.error("O número de maços produzidos é **inferior** ao número de etiquetas utilizadas")
 
-        st.text(f"""Se estiver a fechar o processo e tiver obtido um resultado positivo na reconciliação dos rótulos, coloque os seguintes valores nos locais indicados:
+        st.text(f"""Se estiver a fechar o processo e tiver obtido um resultado positivo na reconciliação das etiquetas, coloque os seguintes valores nos locais indicados:
         A={soma_primeiros}
         B={soma_ultimos}
         C={soma_inutilizados}
