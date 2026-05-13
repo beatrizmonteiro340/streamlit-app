@@ -8,7 +8,7 @@ st.set_page_config(layout="wide",initial_sidebar_state="collapsed")
 from supabase import create_client
 
 url = st.secrets["SUPABASE_URL"]
-key = st.secrets[SUPABASE_KEY]
+key = st.secrets["SUPABASE_KEY"]
 
 supabase = create_client(url, key)
 
