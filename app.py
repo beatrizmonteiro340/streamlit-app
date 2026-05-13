@@ -1,7 +1,7 @@
 import streamlit as st
 import uuid
 import json
-
+import streamlit.components.v1 as components
 
 st.set_page_config(layout="wide",initial_sidebar_state="collapsed")
 
