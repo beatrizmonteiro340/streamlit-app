@@ -259,28 +259,26 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         # Total de rótulos válidos
         total_rotulos = (primeiro_rotulo - ultimo_rotulo + 1) - rejeitados
 
-        if submitted:
-    # ... cálculos ...
     
-    # Botão de imprimir no canto superior direito
-    st.markdown("""
-        <style>
-        .print-btn {
-            position: fixed;
-            top: 15px;
-            right: 15px;
-            z-index: 9999;
-            background-color: #0e1117;
-            color: white;
-            border: 1px solid white;
-            padding: 8px 16px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-        }
-        </style>
-        <button class="print-btn" onclick="window.print()">🖨️ Imprimir</button>
-    """, unsafe_allow_html=True)
+        # Botão de imprimir no canto superior direito
+        st.markdown("""
+            <style>
+            .print-btn {
+                position: fixed;
+                top: 15px;
+                right: 15px;
+                z-index: 9999;
+                background-color: #0e1117;
+                color: white;
+                border: 1px solid white;
+                padding: 8px 16px;
+                border-radius: 8px;
+                cursor: pointer;
+                font-size: 14px;
+            }
+            </style>
+            <button class="print-btn" onclick="window.print()">🖨️ Imprimir</button>
+        """, unsafe_allow_html=True)
 
         #Resultados
         st.subheader("Resultados")
