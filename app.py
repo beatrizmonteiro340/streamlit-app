@@ -11,9 +11,6 @@ key = st.secrets["SUPABASE_KEY"]
 
 supabase = create_client(url, key)
 
-# -------------------------
-# GUARDAR DADOS
-# ---------------------
 def guardar_dados():
     fk = st.session_state.get("form_key", "default")
     supabase.table("sessoes").upsert({
@@ -85,7 +82,6 @@ if not st.session_state.get("dados_carregados", False):
     carregar_dados()
     st.session_state.dados_carregados = True
 
-# Recarrega quando muda de página
 if st.session_state.pagina_anterior != st.session_state.pagina:
     carregar_dados()
     st.session_state.pagina_anterior = st.session_state.pagina
@@ -148,7 +144,7 @@ elif st.session_state.pagina == "menuTAGPRICE":
             st.rerun() 
 
     if st.button("⬅ Voltar ao menu"):    
-        guardar_dados()                                 # BOTÃO (FORA do form)
+        guardar_dados()                                 
         st.session_state.pagina = "menu_inicial"
         st.rerun() 
 
@@ -166,7 +162,7 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         st.session_state[f"ultimo_rotulo_TAGPRICE{fk}"] = f.get("ultimo_rotulo", 0)
         st.session_state[f"rejeitados_TAGPRICE{fk}"] = f.get("rejeitados", 0)
 
-    with st.form(f"form_uma_bobine_TAGPRICE{fk}"):             # ABRE FORM
+    with st.form(f"form_uma_bobine_TAGPRICE{fk}"):            
     
         #Inputs Troca da bobine (contando que as contas anteriores foram bem feitas, basta fazer as contas para a bobine acabada)
         st.markdown("<p style='font-size:22px;font-weight:700;'>Inserir dados de produção</p>", unsafe_allow_html=True)
@@ -217,11 +213,10 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         submitted = st.form_submit_button("Calcular")
 
     if st.button("⬅ Voltar ao menu"): 
-        guardar_dados()                                 # BOTÃO (FORA do form)
+        guardar_dados()                                
         st.session_state.pagina = "menuTAGPRICE"
         st.rerun() 
 
-    # ⭐ NOVO: Simples! Sem limpeza manual
     if st.button("Nova reconciliação"):
         st.session_state["formulario_uma_bobineTAGPRICE"] = {} 
         novo_fk = str(uuid.uuid4()) 
@@ -286,7 +281,7 @@ elif st.session_state.pagina == "todas_bobinesTAGPRICE":
         st.session_state[f"num_bobines_TAGPRICE{fk}"] = f.get("num_bobines", 1)
         st.session_state["dados_restaurados_TAGPRICE"] = True
 
-    # Bobines SEMPRE - para restaurar ao voltar do menu
+
     for i, b in enumerate(bobines_guardadas):
         if f"primeiro_TAGPRICE{i}_{fk}" not in st.session_state:
             st.session_state[f"primeiro_TAGPRICE{i}_{fk}"] = b.get("Primeiro", 0)
@@ -367,14 +362,13 @@ elif st.session_state.pagina == "todas_bobinesTAGPRICE":
         submitted = st.form_submit_button("Calcular")
 
     if st.button("⬅ Voltar ao menu"):    
-        guardar_dados()                                 # BOTÃO (FORA do form)
+        guardar_dados()                                
         st.session_state.pagina = "menuTAGPRICE"
         st.rerun() 
 
-    # ⭐ NOVO: Simples! Sem limpeza manual
     if st.button("Nova reconciliação"):
         st.session_state["formulario_todas_bobinesTAGPRICE"] = {}
-        st.session_state["dados_restaurados_TAGPRICE"] = False                              # BOTÃO (FORA do form)
+        st.session_state["dados_restaurados_TAGPRICE"] = False                             
         novo_fk = str(uuid.uuid4()) 
         keys_manter = ["session_id", "pagina", "dados_carregados"]
         keys_apagar = [k for k in st.session_state if k not in keys_manter]
@@ -392,7 +386,7 @@ elif st.session_state.pagina == "todas_bobinesTAGPRICE":
             "caixas": caixas,
             "unidades_soltas": unidades_soltas,
             "num_bobines": num_bobines,
-            "bobines": dados_bobines,  # <- lista completa das bobines
+            "bobines": dados_bobines, 
         }
         guardar_dados()
         # Produção total esperada
@@ -456,7 +450,7 @@ elif st.session_state.pagina == "menuROTULOS":
             st.rerun() 
 
     if st.button("⬅ Voltar ao menu"):    
-        guardar_dados()                                 # BOTÃO (FORA do form)
+        guardar_dados()                                 
         st.session_state.pagina = "menu_inicial"
         st.rerun() 
 
@@ -474,7 +468,7 @@ elif st.session_state.pagina == "uma_bobineROTULOS":
         st.session_state[f"ultimo_rotulo_ROTULOS{fk}"] = f.get("ultimo_rotulo", 0)
         st.session_state[f"rejeitados_ROTULOS{fk}"] = f.get("rejeitados", 0)
 
-    with st.form(f"form_uma_bobine_ROTULOS{fk}"):             # ABRE FORM
+    with st.form(f"form_uma_bobine_ROTULOS{fk}"):            
     
         #Inputs Troca da bobine (contando que as contas anteriores foram bem feitas, basta fazer as contas para a bobine acabada)
         st.markdown("<p style='font-size:22px;font-weight:700;'>Inserir dados de produção</p>", unsafe_allow_html=True)
@@ -525,11 +519,11 @@ elif st.session_state.pagina == "uma_bobineROTULOS":
         submitted = st.form_submit_button("Calcular")
 
     if st.button("⬅ Voltar ao menu"): 
-        guardar_dados()                                 # BOTÃO (FORA do form)
-        st.session_state.pagina = "menuROTULOS"
+        guardar_dados()                                 
+        st.session_state.pagina = "menuROTULOS
         st.rerun() 
 
-    # ⭐ NOVO: Simples! Sem limpeza manual
+
     if st.button("Nova reconciliação"):
         st.session_state["formulario_uma_bobineROTULOS"] = {} 
         novo_fk = str(uuid.uuid4()) 
@@ -593,7 +587,7 @@ elif st.session_state.pagina == "todas_bobinesROTULOS":
         st.session_state[f"num_bobines_ROTULOS{fk}"] = f.get("num_bobines", 1)
         st.session_state["dados_restauradosROTULOS"] = True
 
-    # Bobines SEMPRE - para restaurar ao voltar do menu
+
     for i, b in enumerate(bobines_guardadas):
         if f"primeiro_ROTULOS{i}_{fk}" not in st.session_state:
             st.session_state[f"primeiro_ROTULOS{i}_{fk}"] = b.get("Primeiro", 0)
@@ -674,14 +668,14 @@ elif st.session_state.pagina == "todas_bobinesROTULOS":
         submitted = st.form_submit_button("Calcular")
 
     if st.button("⬅ Voltar ao menu"):    
-        guardar_dados()                                 # BOTÃO (FORA do form)
+        guardar_dados()                                 
         st.session_state.pagina = "menuROTULOS"
         st.rerun() 
 
-    # ⭐ NOVO: Simples! Sem limpeza manual
+
     if st.button("Nova reconciliação"):
         st.session_state["formulario_todas_bobinesROTULOS"] = {}
-        st.session_state["dados_restaurados_ROTULOS"] = False                              # BOTÃO (FORA do form)
+        st.session_state["dados_restaurados_ROTULOS"] = False                              
         novo_fk = str(uuid.uuid4()) 
         keys_manter = ["session_id", "pagina", "dados_carregados"]
         keys_apagar = [k for k in st.session_state if k not in keys_manter]
