@@ -20,7 +20,9 @@ def guardar_dados():
     supabase.table("sessoes").upsert({
         "session_id": st.session_state.session_id,
         "dados": {
-            "form_key": fk,
+
+            "form_keyTAGPRICE": st.session_state.get("form_keyTAGPRICE", "default"),
+            "form_keyROTULOS": st.session_state.get("form_keyROTULOS", "default"),
 
             "formulario_uma_bobineTAGPRICE":
                 st.session_state.get("formulario_uma_bobineTAGPRICE", {}),
@@ -42,8 +44,10 @@ def carregar_dados():
         .execute()
     if res.data and "dados" in res.data[0]:
         dados = res.data[0]["dados"]
-        if "form_key" in dados:
-            st.session_state["form_key"] = dados["form_key"]
+        if "form_keyTAGPRICE" in dados:
+            st.session_state["form_keyTAGPRICE"] = dados["form_keyTAGPRICE"]
+        if "form_keyROTULOS" in dados:
+            st.session_state["form_keyROTULOS"] = dados["form_keyROTULOS"]
         if "formulario_uma_bobineTAGPRICE" in dados:
             st.session_state["formulario_uma_bobineTAGPRICE"] = dados["formulario_uma_bobineTAGPRICE"]
 
@@ -75,7 +79,8 @@ else:
 st.session_state.setdefault("pagina", "menu_inicial")
 st.session_state.setdefault("pagina_anterior", None)
 st.session_state.setdefault("dados_carregados", False)
-st.session_state.setdefault("form_key", "default")
+st.session_state.setdefault("form_keyTAGPRICE", "default")
+st.session_state.setdefault("form_keyROTULOS", "default")
 
 if not st.session_state.get("dados_carregados", False):
     carregar_dados()
@@ -157,7 +162,7 @@ elif st.session_state.pagina == "menuTAGPRICE":
         st.rerun() 
 
 elif st.session_state.pagina == "uma_bobineTAGPRICE":
-    fk = st.session_state["form_key"]
+    fk = st.session_state["form_keyTAGPRICE"]
     f = st.session_state.get("formulario_uma_bobineTAGPRICE", {})
 
     if f"unidades_por_caixa_TAGPRICE{fk}" not in st.session_state:
@@ -234,7 +239,7 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         keys_apagar = [k for k in st.session_state if k not in keys_manter]
         for k in keys_apagar:
             del st.session_state[k]
-        st.session_state["form_key"] = novo_fk
+        st.session_state["form_keyTAGPRICE"] = novo_fk
         st.session_state["dados_carregados"] = True
         guardar_dados()
         st.rerun()
@@ -279,7 +284,7 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
 
 
 elif st.session_state.pagina == "todas_bobinesTAGPRICE":
-    fk = st.session_state["form_key"]
+    fk = st.session_state["form_keyTAGPRICE"]
     f = st.session_state.get("formulario_todas_bobinesTAGPRICE", {})
     bobines_guardadas = f.get("bobines", [])
 
@@ -384,7 +389,7 @@ elif st.session_state.pagina == "todas_bobinesTAGPRICE":
         keys_apagar = [k for k in st.session_state if k not in keys_manter]
         for k in keys_apagar:
             del st.session_state[k]
-        st.session_state["form_key"] = novo_fk
+        st.session_state["form_keyTAGPRICE"] = novo_fk
         st.session_state["dados_carregados"] = True
         guardar_dados()
         st.rerun()  
@@ -465,7 +470,7 @@ elif st.session_state.pagina == "menuROTULOS":
         st.rerun() 
 
 elif st.session_state.pagina == "uma_bobineROTULOS":
-    fk = st.session_state["form_key"]
+    fk = st.session_state["form_keyROTULOS"]
     f = st.session_state.get("formulario_uma_bobineROTULOS", {})
 
     if f"unidades_por_caixa_ROTULOS{fk}" not in st.session_state:
@@ -541,7 +546,7 @@ elif st.session_state.pagina == "uma_bobineROTULOS":
         keys_apagar = [k for k in st.session_state if k not in keys_manter]
         for k in keys_apagar:
             del st.session_state[k]
-        st.session_state["form_key"] = novo_fk
+        st.session_state["form_keyROTULOS"] = novo_fk
         st.session_state["dados_carregados"] = True
         guardar_dados()
         st.rerun()
@@ -586,7 +591,7 @@ elif st.session_state.pagina == "uma_bobineROTULOS":
 
 
 elif st.session_state.pagina == "todas_bobinesROTULOS":
-    fk = st.session_state["form_key"]
+    fk = st.session_state["form_keyROTULOS"]
     f = st.session_state.get("formulario_todas_bobinesROTULOS", {})
     bobines_guardadas = f.get("bobines", [])
 
@@ -691,7 +696,7 @@ elif st.session_state.pagina == "todas_bobinesROTULOS":
         keys_apagar = [k for k in st.session_state if k not in keys_manter]
         for k in keys_apagar:
             del st.session_state[k]
-        st.session_state["form_key"] = novo_fk
+        st.session_state["form_keyROTULOS"] = novo_fk
         st.session_state["dados_carregados"] = True
         supabase.table("sessoes").upsert({
             "session_id": st.session_state.session_id,
