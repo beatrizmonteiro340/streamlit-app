@@ -281,7 +281,7 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         D={amostras}
         B-A={total_rotulos}
         C+D={soma_rejeitados}
-        Nº de bobines utilizadas={num_bobines}
+        Nº de bobines utilizadas=1
         E+F={total_rotulos}
         G-H={total_rotulosvalidos}
         Quantidade final obtida={producao_total}""")
@@ -603,9 +603,9 @@ elif st.session_state.pagina == "uma_bobineROTULOS":
             B={ultimo_rotulo}
             C={inutilizados}
             D={amostras}
-            B-A={somatotal_rotulos}
+            B-A={total_rotulos}
             C+D={rejeitadostotal}
-            Nº de bobines utilizadas={num_bobines}
+            Nº de bobines utilizadas=1
             E+F={total_rotulos}
             G-H={total_rotulosvalidos}
             Quantidade final obtida={producao_total}""")
