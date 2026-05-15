@@ -254,8 +254,8 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         producao_total = (ultimacaixa-primeiracaixa+1)*unidades_por_caixa +unidades_soltas_primeira+unidades_soltas_ultima
 
         # Total de rótulos válidos
-        total_rotulos = (primeiro_rotulo - ultimo_rotulo + 1) - inutilizados - amostras
-
+        total_rotulos = (primeiro_rotulo - ultimo_rotulo + 1)
+        total_rotulosvalidos= (primeiro_rotulo - ultimo_rotulo + 1) - inutilizados - amostras
         soma_rejeitados = inutilizados + amostras
 
         #Resultados
