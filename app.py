@@ -244,8 +244,8 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         "unidades_soltas_ultima": unidades_soltas_ultima,
         "primeiro_rotulo": primeiro_rotulo,
         "ultimo_rotulo": ultimo_rotulo,
-        "inutilizadosTAGPRICE": inutilizadosTAGPRICE,
-        "amostrasTAGPRICE": amostrasTAGPRICE    
+        "inutilizadosTAGPRICE": inutilizados,
+        "amostrasTAGPRICE": amostras    
         }
         
         guardar_dados()
