@@ -256,6 +256,8 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         # Total de rótulos válidos
         total_rotulos = (primeiro_rotulo - ultimo_rotulo + 1) - inutilizados - amostras
 
+        soma_rejeitados = inutilizados + amostras
+
         #Resultados
         st.subheader("Resultados")
 
@@ -277,7 +279,7 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         B={primeiro_rotulo}
         C={inutilizados}
         D={amostras}
-        B-A={somatotal_rotulos}
+        B-A={total_rotulos}
         C+D={soma_rejeitados}
         Nº de bobines utilizadas={num_bobines}
         E+F={total_rotulos}
