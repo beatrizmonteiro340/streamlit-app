@@ -212,7 +212,7 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
             u3 = inutilizados = st.number_input("Número de inutilizados", min_value=0, step=1, key=f"inutilizados_TAGPRICE{fk}",value=f.get("inutilizados", 0))
 
         with col4:
-            u4 = amostras = st.number_input("Número de amostras", min_value=0, step=1, key=f"amostras_TAGPRICE{fk}",value=f.get("amostras", 0)
+            u4 = amostras = st.number_input("Número de amostras", min_value=0, step=1, key=f"amostras_TAGPRICE{fk}",value=f.get("amostras", 0))
         submitted = st.form_submit_button("Calcular")
 
     if st.button("⬅ Voltar ao menu"): 
