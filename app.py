@@ -262,7 +262,7 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         st.subheader("Resultados")
 
         st.write(f"✔ Produção: **{producao_total} unidades**")
-        st.write(f"✔ Etiquetas válidas (excluindo inutilizados e amostras): **{total_rotulos} unidades**")
+        st.write(f"✔ Etiquetas válidas (excluindo inutilizados e amostras): **{total_rotulosvalidos} unidades**")
 
         #Verificação
         if producao_total == total_rotulos:
