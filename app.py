@@ -256,8 +256,8 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         # Total de rótulos válidos
         soma_rotulos = (primeiro_rotulo - ultimo_rotulo)
         total_rotulos = soma_rotulos +1
-        total_rotulosvalidos= total_rotulos - inutilizados - amostras
         soma_rejeitados = inutilizados + amostras
+        total_rotulosvalidos= total_rotulos - soma_rejeitados
 
         #Resultados
         st.subheader("Resultados")
