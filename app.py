@@ -586,6 +586,18 @@ elif st.session_state.pagina == "uma_bobineROTULOS":
             else:
                 st.error("O número de maços produzidos é **inferior** ao número de etiquetas utilizadas")
 
+        st.text(f"""Se estiver a fechar o processo e tiver obtido um resultado positivo na reconciliação das etiquetas, coloque os seguintes valores nos locais indicados:
+            A={soma_primeiros}
+            B={soma_ultimos}
+            C={soma_inutilizados}
+            D={soma_amostras}
+            B-A={somatotal_rotulos}
+            C+D={soma_rejeitados}
+            Nº de bobines utilizadas={num_bobines}
+            E+F={total_rotulos}
+            G-H={total_rotulosvalidos}
+            Quantidade final obtida={producao_total}""")
+
 
 elif st.session_state.pagina == "todas_bobinesROTULOS":
     fk = st.session_state["form_keyROTULOS"]
