@@ -269,8 +269,8 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
                 st.error("O número de unidades produzidas é **inferior** ao número de etiquetas utilizadas")
                 
         st.text(f"""Se estiver a fechar o processo e tiver obtido um resultado positivo na reconciliação das etiquetas, coloque os seguintes valores nos locais indicados:
-        A={soma_ultimos}
-        B={soma_primeiros}
+        A={ultimo_rotulo}
+        B={primeiro_rotulo}
         C={soma_inutilizados}
         D={soma_amostras}
         B-A={somatotal_rotulos}
@@ -587,8 +587,8 @@ elif st.session_state.pagina == "uma_bobineROTULOS":
                 st.error("O número de maços produzidos é **inferior** ao número de etiquetas utilizadas")
 
         st.text(f"""Se estiver a fechar o processo e tiver obtido um resultado positivo na reconciliação das etiquetas, coloque os seguintes valores nos locais indicados:
-            A={soma_primeiros}
-            B={soma_ultimos}
+            A={primeiro_rotulo}
+            B={ultimo_rotulo}
             C={soma_inutilizados}
             D={soma_amostras}
             B-A={somatotal_rotulos}
