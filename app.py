@@ -160,8 +160,8 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         st.session_state[f"unidades_soltas_ultima_TAGPRICE{fk}"] = f.get("unidades_soltas_ultima", 0)
         st.session_state[f"primeiro_rotulo_TAGPRICE{fk}"] = f.get("primeiro_rotulo", 0)
         st.session_state[f"ultimo_rotulo_TAGPRICE{fk}"] = f.get("ultimo_rotulo", 0)
-        st.session_state[f"inutilizados_TAGPRICE{fk}"] = f.get("inutilizados", 0)
-        st.session_state[f"amostras_TAGPRICE{fk}"] = f.get("amostras", 0)
+        st.session_state[f"inutilizados_TAGPRICE{fk}"] = f.get("inutilizadosTAGPRICE", 0)
+        st.session_state[f"amostras_TAGPRICE{fk}"] = f.get("amostrasTAGPRICE", 0)
 
     with st.form(f"form_uma_bobine_TAGPRICE{fk}"):            
     
@@ -244,10 +244,10 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         "unidades_soltas_ultima": unidades_soltas_ultima,
         "primeiro_rotulo": primeiro_rotulo,
         "ultimo_rotulo": ultimo_rotulo,
-        "inutilizados": inutilizados,
-        "amostras": amostras    
+        "inutilizadosTAGPRICE": inutilizadosTAGPRICE,
+        "amostrasTAGPRICE": amostrasTAGPRICE    
         }
-
+        
         guardar_dados()
 
         # Produção total
