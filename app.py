@@ -520,7 +520,7 @@ elif st.session_state.pagina == "uma_bobineROTULOS":
 
     if st.button("⬅ Voltar ao menu"): 
         guardar_dados()                                 
-        st.session_state.pagina = "menuROTULOS
+        st.session_state.pagina = "menuROTULOS"
         st.rerun() 
 
 
