@@ -160,7 +160,8 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         st.session_state[f"unidades_soltas_ultima_TAGPRICE{fk}"] = f.get("unidades_soltas_ultima", 0)
         st.session_state[f"primeiro_rotulo_TAGPRICE{fk}"] = f.get("primeiro_rotulo", 0)
         st.session_state[f"ultimo_rotulo_TAGPRICE{fk}"] = f.get("ultimo_rotulo", 0)
-        st.session_state[f"rejeitados_TAGPRICE{fk}"] = f.get("rejeitados", 0)
+        st.session_state[f"inutilizados_TAGPRICE{fk}"] = f.get("inutilizados", 0)
+        st.session_state[f"amostras_TAGPRICE{fk}"] = f.get("amostras", 0)
 
     with st.form(f"form_uma_bobine_TAGPRICE{fk}"):            
     
@@ -208,8 +209,10 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         col3, col4 = st.columns(2)
 
         with col3:
-            u3 = rejeitados = st.number_input("Número de rejeitados (inutilizados + amostras)", min_value=0, step=1, key=f"rejeitados_TAGPRICE{fk}",value=f.get("rejeitados", 0))
+            u3 = inutilizados = st.number_input("Número de inutilizados", min_value=0, step=1, key=f"inutilizados_TAGPRICE{fk}",value=f.get("inutilizados", 0))
 
+        with col4:
+            u4 = amostras = st.number_input("Número de amostras", min_value=0, step=1, key=f"amostras_TAGPRICE{fk}",value=f.get("amostras", 0)
         submitted = st.form_submit_button("Calcular")
 
     if st.button("⬅ Voltar ao menu"): 
@@ -241,7 +244,8 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         "unidades_soltas_ultima": unidades_soltas_ultima,
         "primeiro_rotulo": primeiro_rotulo,
         "ultimo_rotulo": ultimo_rotulo,
-        "rejeitados": rejeitados,
+        "inutilizados": inutilizados,
+        "amostras": amostras    
         }
 
         guardar_dados()
@@ -250,7 +254,7 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         producao_total = (ultimacaixa-primeiracaixa+1)*unidades_por_caixa +unidades_soltas_primeira+unidades_soltas_ultima
 
         # Total de rótulos válidos
-        total_rotulos = (primeiro_rotulo - ultimo_rotulo + 1) - rejeitados
+        total_rotulos = (primeiro_rotulo - ultimo_rotulo + 1) - inutilizados - amostras
 
         #Resultados
         st.subheader("Resultados")
@@ -271,8 +275,8 @@ elif st.session_state.pagina == "uma_bobineTAGPRICE":
         st.text(f"""Se estiver a fechar o processo e tiver obtido um resultado positivo na reconciliação das etiquetas, coloque os seguintes valores nos locais indicados:
         A={ultimo_rotulo}
         B={primeiro_rotulo}
-        C={soma_inutilizados}
-        D={soma_amostras}
+        C={inutilizados}
+        D={amostras}
         B-A={somatotal_rotulos}
         C+D={soma_rejeitados}
         Nº de bobines utilizadas={num_bobines}
@@ -298,8 +302,8 @@ elif st.session_state.pagina == "todas_bobinesTAGPRICE":
         if f"primeiro_TAGPRICE{i}_{fk}" not in st.session_state:
             st.session_state[f"primeiro_TAGPRICE{i}_{fk}"] = b.get("Primeiro", 0)
             st.session_state[f"ultimo_TAGPRICE{i}_{fk}"] = b.get("Último", 0)
-            st.session_state[f"inutilizados_TAGPRICE{i}_{fk}"] = b.get("Inutilizados", 0)
-            st.session_state[f"amostras_TAGPRICE{i}_{fk}"] = b.get("Amostras", 0)
+            st.session_state[f"inutilizados_totalTAGPRICE{i}_{fk}"] = b.get("Inutilizadostotal", 0)
+            st.session_state[f"amostras_totalTAGPRICE{i}_{fk}"] = b.get("Amostrastotal", 0)
 
     # Número de bobines
     num_bobines = st.number_input(
@@ -324,6 +328,7 @@ elif st.session_state.pagina == "todas_bobinesTAGPRICE":
 
         with col4:
             u4 = unidades_soltas=st.number_input("Número de unidades na última caixa contentora incompleta", min_value=0, step=1, key=f"unidades_soltas_TAGPRICE{fk}",value=f.get("unidades_soltas", 0))
+            
 
         st.divider()
 
@@ -354,21 +359,21 @@ elif st.session_state.pagina == "todas_bobinesTAGPRICE":
             with col3:
                 inutilizados=st.number_input(
                     f"Número de etiquetas inutilizadas da bobine {i+1}",
-                    key=f"inutilizados_TAGPRICE{i}_{fk}",min_value=0, step=1,value=b.get("inutilizados", 0)
+                    key=f"inutilizados_totalTAGPRICE{i}_{fk}",min_value=0, step=1,value=b.get("inutilizadostotal", 0)
                 )
 
             with col4:
                 amostras=st.number_input(
                     f"Número de amostras da bobine{i+1}",
-                    key=f"amostras_TAGPRICE{i}_{fk}",min_value=0, step=1,value=b.get("amostras", 0)
+                    key=f"amostras_totalTAGPRICE{i}_{fk}",min_value=0, step=1,value=b.get("amostrastotal", 0)
                 )
 
             dados_bobines.append({
                 "Bobine": i+1,
                 "Primeiro": primeiro,
                 "Último": ultimo,
-                "Inutilizados":inutilizados,
-                "Amostras":amostras
+                "Inutilizadostotal":inutilizadostotal,
+                "Amostrastotal":amostrastotal
             })
 
         submitted = st.form_submit_button("Calcular")
@@ -406,8 +411,8 @@ elif st.session_state.pagina == "todas_bobinesTAGPRICE":
         soma_primeiros = sum(b["Primeiro"] for b in dados_bobines)
         soma_ultimos = sum(b["Último"] for b in dados_bobines)
 
-        soma_inutilizados=sum(b["Inutilizados"] for b in dados_bobines)
-        soma_amostras=sum(b["Amostras"] for b in dados_bobines)
+        soma_inutilizados=sum(b["Inutilizadostotal"] for b in dados_bobines)
+        soma_amostras=sum(b["Amostrastotal"] for b in dados_bobines)
         soma_rejeitados=soma_amostras+soma_inutilizados
 
         somatotal_rotulos=soma_primeiros-soma_ultimos
@@ -478,7 +483,8 @@ elif st.session_state.pagina == "uma_bobineROTULOS":
         st.session_state[f"unidades_soltas_ultima_ROTULOS{fk}"] = f.get("unidades_soltas_ultima", 0)
         st.session_state[f"primeiro_rotulo_ROTULOS{fk}"] = f.get("primeiro_rotulo", 0)
         st.session_state[f"ultimo_rotulo_ROTULOS{fk}"] = f.get("ultimo_rotulo", 0)
-        st.session_state[f"rejeitados_ROTULOS{fk}"] = f.get("rejeitados", 0)
+        st.session_state[f"inutilizados_ROTULOS{fk}"] = f.get("inutilizados", 0)
+        st.session_state[f"amostras_ROTULOS{fk}"] = f.get("amostras", 0)
 
     with st.form(f"form_uma_bobine_ROTULOS{fk}"):            
     
@@ -526,7 +532,8 @@ elif st.session_state.pagina == "uma_bobineROTULOS":
         col3, col4 = st.columns(2)
 
         with col3:
-            u3 = rejeitados = st.number_input("Número de rejeitados (inutilizados + amostras)", min_value=0, step=1, key=f"rejeitados_ROTULOS{fk}",value=f.get("rejeitados", 0))
+            u3 = inutilizados = st.number_input("Número de inutilizados", min_value=0, step=1, key=f"inutilizados_ROTULOS{fk}",value=f.get("inutilizados", 0))
+            u4 = amostras = st.number_input("Número de amostras", min_value=0, step=1, key=f"amostras_ROTULOS{fk}",value=f.get("amostras", 0))
 
         submitted = st.form_submit_button("Calcular")
 
@@ -559,7 +566,8 @@ elif st.session_state.pagina == "uma_bobineROTULOS":
         "unidades_soltas_ultima": unidades_soltas_ultima,
         "primeiro_rotulo": primeiro_rotulo,
         "ultimo_rotulo": ultimo_rotulo,
-        "rejeitados": rejeitados,
+        "inutilizados": inutilizados,
+        "amostras": amostras,    
         }
 
         guardar_dados()
@@ -568,7 +576,9 @@ elif st.session_state.pagina == "uma_bobineROTULOS":
         producao_total = (ultimacaixa-primeiracaixa+1)*unidades_por_caixa +unidades_soltas_primeira+unidades_soltas_ultima
 
         # Total de rótulos válidos
-        total_rotulos = (ultimo_rotulo - primeiro_rotulo + 1) - rejeitados
+        total_rotulos = (ultimo_rotulo - primeiro_rotulo + 1) - amostras - inutilizados
+
+        rejeitadostotal= amostras+inutilizados
 
         #Resultados
         st.subheader("Resultados")
@@ -589,10 +599,10 @@ elif st.session_state.pagina == "uma_bobineROTULOS":
         st.text(f"""Se estiver a fechar o processo e tiver obtido um resultado positivo na reconciliação das etiquetas, coloque os seguintes valores nos locais indicados:
             A={primeiro_rotulo}
             B={ultimo_rotulo}
-            C={soma_inutilizados}
-            D={soma_amostras}
+            C={inutilizados}
+            D={amostras}
             B-A={somatotal_rotulos}
-            C+D={soma_rejeitados}
+            C+D={rejeitadostotal}
             Nº de bobines utilizadas={num_bobines}
             E+F={total_rotulos}
             G-H={total_rotulosvalidos}
